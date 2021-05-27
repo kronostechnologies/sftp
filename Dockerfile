@@ -1,6 +1,4 @@
-FROM docker.pkg.github.com/atmoz/sftp/debian
-
-RUN apt update ; apt full-upgrade -y ; apt clean
+FROM atmoz/sftp:debian
 
 COPY ./override.sh /
 
