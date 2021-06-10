@@ -23,25 +23,3 @@ if [[ "${use_mmproxy}" == "1" ]]; then
 
   go-mmproxy "${mmproxy_flags[@]}" 2>&1 | logger -t go-mmproxy &
 fi
-
-if [ ! -z "${ssh_host_ed25519_key}" ]
-then
-  echo "${ssh_host_ed25519_key}" > /etc/ssh/ssh_host_ed25519_key && chmod 600 /etc/ssh/ssh_host_ed25519_key
-fi
-
-if [ ! -z "${ssh_host_rsa_key}" ]
-then
-  echo "${ssh_host_rsa_key}" > /etc/ssh/ssh_host_rsa_key && chmod 600 /etc/ssh/ssh_host_rsa_key
-fi
-
-echo "LogLevel ${log_level:-INFO}" >> /etc/ssh/sshd_config
-sed -i "s~ForceCommand internal-sftp~ForceCommand internal-sftp -l ${log_level:-INFO}~g" /etc/ssh/sshd_config
-
-if [ ! -z "${max_startups}" ]
-then
-  echo "MaxStartups ${max_startups}" >> /etc/ssh/sshd_config
-fi
-
-syslogd -nLO - &
-
-./entrypoint "$@"
